@@ -1,0 +1,445 @@
+
+
+
+#############################################
+# TEORÍA DE EXPRESIONES REGULARES (REGEX)
+#############################################
+
+¿Qué son?
+---------
+Las expresiones regulares (regex) son patrones que sirven para:
+- Buscar texto dentro de cadenas.
+- Validar si un texto cumple ciertas reglas.
+- Reemplazar partes de un texto.
+- Extraer fragmentos específicos.
+
+En pocas palabras: 
+un regex es como un "lenguaje para encontrar texto" de manera flexible.
+
+¿Dónde se usan?
+---------------
+- En programación (R, Python, Java, etc.).
+- En análisis de datos (limpieza de texto, bioinformática).
+- En editores de texto (ej: buscar y reemplazar en Word, Notepad++).
+- En bioinformática para encontrar motivos en secuencias de ADN.
+
+Funciones en R
+--------------
+- grep()     → Devuelve posiciones o valores que cumplen el patrón.
+- grepl()    → Devuelve TRUE/FALSE si hay coincidencia.
+- gsub()     → Reemplaza todas las coincidencias.
+- regexpr()  → Devuelve posición de la primera coincidencia.
+- gregexpr() → Devuelve posiciones de todas las coincidencias.
+- regmatches() → Extrae lo que coincide.
+
+Símbolos básicos en regex
+-------------------------
+
+1. ^  → Inicio de la cadena.
+   Ejemplo: ^A busca cadenas que empiecen con "A".
+
+2. $  → Fin de la cadena.
+   Ejemplo: T$ busca cadenas que terminan en "T".
+
+3. .  → Cualquier carácter (comodín).
+   Ejemplo: A.G busca "A" seguido de cualquier letra y luego "G".
+   (encaja con "ATG", "ACG", etc.)
+
+4. [] → Conjunto de caracteres posibles.
+   Ejemplo: [AT] busca "A" o "T".
+   Ejemplo: [0-9] busca un número del 0 al 9.
+
+5. +  → Una o más repeticiones.
+   Ejemplo: A+ busca "A", "AA", "AAA", etc.
+
+6. *  → Cero o más repeticiones.
+   Ejemplo: T* busca "", "T", "TT", "TTT"...
+
+7. ?  → Cero o una repetición.
+   Ejemplo: AT? busca "A" o "AT".
+
+8. {n} → Exactamente n repeticiones.
+   Ejemplo: A{3} busca "AAA".
+
+9. {n,} → Al menos n repeticiones.
+   Ejemplo: C{2,} busca "CC", "CCC", "CCCC"...
+
+10. {n,m} → Entre n y m repeticiones.
+    Ejemplo: G{2,4} busca "GG", "GGG" o "GGGG".
+
+11. |  → Operador OR.
+    Ejemplo: (AA|TT) busca "AA" o "TT".
+
+12. \d → Dígito (igual que [0-9]).
+    Ejemplo: \d+ busca uno o más números.
+
+13. \w → Caracter alfanumérico (letras, números, guion bajo).
+    Ejemplo: \w+ busca una palabra.
+
+14. \s → Espacio en blanco.
+    Ejemplo: \s+ busca uno o más espacios.
+
+15. () → Agrupación de patrones.
+    Ejemplo: (ATG)+ busca una o más repeticiones de "ATG".
+
+Ejemplos conceptuales
+---------------------
+
+- "^AT"   → empieza con "AT".
+- "CG$"   → termina con "CG".
+- "A.T"   → "A", cualquier letra, "T".
+- "[AG]"  → "A" o "G".
+- "ATG|TAA" → busca "ATG" o "TAA".
+- "AAA"   → tres "A" seguidas.
+- "A{2,4}" → de 2 a 4 "A" seguidas.
+
+Aplicación a ADN
+----------------
+- Validar que una secuencia solo tenga A, T, C, G: ^[ATCG]+$
+- Buscar codón de inicio (ATG): ATG
+- Buscar codones de parada (TAA|TAG|TGA): (TAA|TAG|TGA)
+- Buscar repeticiones de "AAA": AAA
+- Extraer tripletes (codones): ...
+
+#############################################
+# FIN DE LA TEORÍA
+#############################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#############################################
+# EXPRESIONES REGULARES EN R
+#############################################
+
+Las expresiones regulares (regex) son patrones que permiten:
+- Buscar
+- Extraer
+- Validar
+- Reemplazar texto
+
+En R se usan principalmente con estas funciones:
+
+grep()     → Busca coincidencias y devuelve posiciones o valores.
+grepl()    → Devuelve TRUE/FALSE si hay coincidencia.
+gsub()     → Reemplaza texto usando un patrón.
+regexpr()  → Devuelve posición de la primera coincidencia.
+gregexpr() → Devuelve posiciones de todas las coincidencias.
+regmatches() → Extrae lo que coincide con el patrón.
+
+
+#############################################
+# 1. Buscar palabras simples
+#############################################
+
+frases <- c("El ajolote vive en México", 
+            "El ajolote es un anfibio", 
+            "Las serpientes habitan en bosques")
+
+# Buscar frases que contienen "ajolote"
+grep("ajolote", frases, value = TRUE)
+
+# Buscar frases que contienen "México"
+grep("México", frases, value = TRUE)
+
+
+#############################################
+# 2. Ejemplo con ADN: buscar motivos
+#############################################
+
+dna <- c("ATGCA", "CGTAT", "TTGAA", "GGGCCC", "AAATTT")
+
+# Buscar secuencias que contienen "AT"
+grep("AT", dna, value = TRUE)
+
+# Buscar secuencias que contienen "GG"
+grep("GG", dna, value = TRUE)
+
+
+#############################################
+# 3. Uso de inicio (^) y fin ($)
+#############################################
+
+# Palabras que empiezan con "A"
+grep("^A", dna, value = TRUE)
+
+# Palabras que terminan con "A"
+grep("A$", dna, value = TRUE)
+
+# Frases que terminan en "bosques"
+grep("bosques$", frases, value = TRUE)
+
+
+#############################################
+# 4. Reemplazar texto
+#############################################
+
+# Reemplazar "México" por "el Eje Neovolcánico"
+gsub("México", "el Eje Neovolcánico", frases)
+
+# Reemplazar "T" por "U" en las secuencias (transcripción ADN → ARN)
+gsub("T", "U", dna)
+
+
+#############################################
+# 5. Validar secuencias de ADN
+#############################################
+
+# Secuencias válidas y con errores
+seqs <- c("ATGCA", "CGTXT", "GGGCCC", "AATTNN")
+
+# Extraer solo las válidas (solo A, T, C, G)
+grep("^[ATCG]+$", seqs, value = TRUE)
+
+
+#############################################
+# 6. Buscar repeticiones
+#############################################
+
+# Buscar secuencias con "AAA"
+grep("AAA", dna, value = TRUE)
+
+# Buscar secuencias con "GGG"
+grep("GGG", dna, value = TRUE)
+
+# Buscar palabras con dos letras iguales seguidas
+grep("(AA|TT|CC|GG)", dna, value = TRUE)
+
+
+#############################################
+# 7. Contar ocurrencias de un motivo
+#############################################
+
+# Contar cuántas veces aparece "AT" en cada secuencia
+sapply(dna, function(x) length(unlist(regmatches(x, gregexpr("AT", x)))))
+
+# Contar cuántas veces aparece "G"
+sapply(dna, function(x) length(unlist(regmatches(x, gregexpr("G", x)))))
+
+
+#############################################
+# 8. Extraer tripletes (codones)
+#############################################
+
+seq <- "ATGCGTACGTTGA"
+
+# Extraer tripletes de 3 en 3
+regmatches(seq, gregexpr("...", seq))
+
+
+#############################################
+# 9. Codones de inicio y stop
+#############################################
+
+# Buscar secuencias que empiecen con ATG (inicio)
+grep("^ATG", dna, value = TRUE)
+
+# Buscar secuencias que terminen en TGA (stop)
+grep("TGA$", dna, value = TRUE)
+
+
+#############################################
+# 10. Uso de grepl (TRUE/FALSE)
+#############################################
+
+# Verificar si las secuencias contienen "AT"
+grepl("AT", dna)
+
+# Verificar si las secuencias terminan con "C"
+grepl("C$", dna)
+
+
+#############################################
+# 11. Ejemplo con números dentro de texto
+#############################################
+
+coords <- c("Lat: 19.234, Lon: -99.456", 
+            "Lat: 20.567, Lon: -100.123")
+
+# Extraer solo los números
+regmatches(coords, gregexpr("[0-9.-]+", coords))
+
+
+#############################################
+# 12. Validar correos electrónicos (ejemplo general)
+#############################################
+
+correos <- c("juan@gmail.com", "maria123@yahoo.com", 
+             "correo_invalido@", "ana@hotmail.com")
+
+# Detectar correos válidos
+grep("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,}$", correos, value = TRUE)
+
+
+#############################################
+# 13. Más ejemplos para practicar
+#############################################
+
+# Buscar secuencias que empiecen con "T" y terminen con "A"
+grep("^T.*A$", dna, value = TRUE)
+
+# Reemplazar "A" por "X" en todas las secuencias
+gsub("A", "X", dna)
+
+# Extraer motivos CG de cada secuencia
+regmatches(dna, gregexpr("CG", dna))
+
+# Buscar secuencias que tengan A seguida de cualquier letra y luego G
+grep("A.G", dna, value = TRUE)
+
+#############################################
+# FIN DE EJEMPLOS
+#############################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#############################################
+# EJERCICIOS BÁSICOS DE EXPRESIONES REGULARES EN R
+# CON SECUENCIAS DE ADN
+#############################################
+
+# Creamos un vector con secuencias de ADN inventadas
+dna <- c("ATGCA", "CGTAT", "TTGAA", "GGGCCC", "AAATTT")
+
+#############################################
+# 1. Buscar un motivo simple
+#############################################
+
+# Buscar las secuencias que contienen "AT"
+grep("AT", dna, value = TRUE)
+
+# Buscar las secuencias que contienen "GG"
+grep("GG", dna, value = TRUE)
+
+
+#############################################
+# 2. Reemplazar nucleótidos
+#############################################
+
+# Cambiar todas las T por U (como si fuera ARN)
+gsub("T", "U", dna)
+
+# Cambiar todas las A por X
+gsub("A", "X", dna)
+
+
+#############################################
+# 3. Buscar secuencias que empiezan o terminan con algo
+#############################################
+
+# Secuencias que empiezan con A
+grep("^A", dna, value = TRUE)
+
+# Secuencias que terminan con A
+grep("A$", dna, value = TRUE)
+
+
+#############################################
+# 4. Validar secuencias de ADN
+# (solo deben tener A, T, C o G)
+#############################################
+
+# Algunas secuencias correctas y otras con errores
+seqs <- c("ATGCA", "CGTXT", "GGGCCC", "AATTNN")
+
+# Extraer solo las secuencias válidas
+grep("^[ATCG]+$", seqs, value = TRUE)
+
+
+#############################################
+# 5. Buscar repeticiones de nucleótidos
+#############################################
+
+# Secuencias que tienen al menos "AAA"
+grep("AAA", dna, value = TRUE)
+
+# Secuencias que tienen al menos "GGG"
+grep("GGG", dna, value = TRUE)
+
+
+#############################################
+# 6. Contar ocurrencias de un motivo
+#############################################
+
+# Contar cuántas veces aparece "AT" en cada secuencia
+sapply(dna, function(x) length(unlist(regmatches(x, gregexpr("AT", x)))))
+
+# Contar cuántas veces aparece "G"
+sapply(dna, function(x) length(unlist(regmatches(x, gregexpr("G", x)))))
+
+
+#############################################
+# 7. Extraer tripletes (codones) de una secuencia
+#############################################
+
+seq <- "ATGCGTACGTTGA"
+
+# Extraer tripletes de 3 en 3
+regmatches(seq, gregexpr("...", seq))
+
+
+#############################################
+# 8. Buscar codón de inicio o de stop
+#############################################
+
+# Buscar secuencias que empiecen con el codón de inicio ATG
+grep("^ATG", dna, value = TRUE)
+
+# Buscar secuencias que terminen en TGA (codón de stop)
+grep("TGA$", dna, value = TRUE)
+
+
+#############################################
+# 9. Detectar motivos más complejos
+#############################################
+
+# Buscar secuencias que tengan A seguida de cualquier letra y luego G
+grep("A.G", dna, value = TRUE)
+
+# Buscar secuencias con dos letras repetidas (AA, TT, CC o GG)
+grep("(AA|TT|CC|GG)", dna, value = TRUE)
+
+
+#############################################
+# 10. Usar grepl para TRUE/FALSE
+#############################################
+
+# Verificar si cada secuencia contiene "AT"
+grepl("AT", dna)
+
+# Verificar si cada secuencia termina en "C"
+grepl("C$", dna)
